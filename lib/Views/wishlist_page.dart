@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipe_app/Controllers/wishlist_controller.dart';
+import 'package:recipe_app/Models/Data/data.dart';
 import 'package:recipe_app/Models/meals_model.dart';
 import 'package:recipe_app/Views/product_details_page.dart';
 
-class ProductsPage extends StatelessWidget {
-  final String category;
-  final List<Meal> filterMeals;
-  ProductsPage({super.key, required this.category, required this.filterMeals});
+class WishListPage extends StatelessWidget {
+  WishListPage({super.key});
+
 
   final wishListController = Get.put(WishListController());
 
   @override
   Widget build(BuildContext context) {
+    List<Meal> wishedMeals = meals.where((meal) {
+      return wishListController.wishItems.contains(meal.id);
+    }).toList();
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          category,
-          style: const TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: AppBar(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            itemCount: filterMeals.length,
+            itemCount: wishedMeals.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: constraints.maxWidth >= 550 ? 2 : 1,
                 mainAxisSpacing: 20,
@@ -38,33 +33,33 @@ class ProductsPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: GestureDetector(
                   onTap: () {
-                    Get.to(() => ProductDetailsPage(meal: filterMeals[index]));
+                    Get.to(() => ProductDetailsPage(meal: wishedMeals[index]));
                   },
                   child: GridTile(
                     header: GridTileBar(
                       title: Text(
-                        filterMeals[index].title,
+                        wishedMeals[index].title,
                         style:
                             const TextStyle(color: Colors.black, fontSize: 15),
                       ),
                       trailing: IconButton(
                           onPressed: () {
                             wishListController
-                                .addToWishList(filterMeals[index].id);
+                                .addToWishList(wishedMeals[index].id);
                           },
                           icon: Obx(() => Icon(
                                 wishListController
-                                        .isinWishlist(filterMeals[index].id)
+                                        .isinWishlist(wishedMeals[index].id)
                                     ? Icons.favorite
                                     : Icons.favorite_border, 
                                 color: wishListController
-                                        .isinWishlist(filterMeals[index].id) ?  Colors.red: Colors.black,
+                                        .isinWishlist(wishedMeals[index].id) ?  Colors.red: Colors.black,
                               ))),
                       backgroundColor: Colors.white,
                     ),
                     // footer: const GridTileBar(backgroundColor: Colors.white,),
                     child: Image.network(
-                      filterMeals[index].imageUrl,
+                      wishedMeals[index].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),

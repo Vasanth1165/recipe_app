@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:recipe_app/Controllers/wishlist_controller.dart';
 import 'package:recipe_app/Models/meals_model.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Meal meal;
-  const ProductDetailsPage({super.key, required this.meal});
+  ProductDetailsPage({super.key, required this.meal});
+
+  final wishListController = Get.put(WishListController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,17 @@ class ProductDetailsPage extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.favorite_border))
+                    onPressed: () {
+                      wishListController.addToWishList(meal.id);
+                    },
+                    icon: Obx(() => Icon(
+                          wishListController.isinWishlist(meal.id)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: wishListController.isinWishlist(meal.id)
+                              ? Colors.red
+                              : Colors.black,
+                        )))
               ],
             ),
             ListTile(
@@ -41,8 +55,14 @@ class ProductDetailsPage extends StatelessWidget {
                 ),
               ),
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8,),
-              title: Text(meal.affordability,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              title: Text(
+                meal.affordability,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               trailing: Text(meal.complexity),
               subtitle: Text("Duration ${meal.duration} Minutes"),
             ),
@@ -65,11 +85,13 @@ class ProductDetailsPage extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               scrollDirection: Axis.horizontal,
               child: Row(
-              children: meal.ingredients.map((e) =>Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: Chip(label: Text(e)),
-              )).toList(),
-            ),
+                children: meal.ingredients
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(label: Text(e)),
+                        ))
+                    .toList(),
+              ),
             ),
             const SizedBox(
               height: 12,
@@ -91,14 +113,21 @@ class ProductDetailsPage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 0),
               itemCount: meal.steps.length,
-              itemBuilder:(context, index) {
+              itemBuilder: (context, index) {
                 return ListTile(
                   minLeadingWidth: 0,
                   visualDensity: const VisualDensity(vertical: -4),
-                  leading: Text("${index+1}",style: const TextStyle(fontSize: 15),),
-                  title: Text(meal.steps[index],textAlign: TextAlign.justify,),
+                  leading: Text(
+                    "${index + 1}",
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  title: Text(
+                    meal.steps[index],
+                    textAlign: TextAlign.justify,
+                  ),
                 );
-            },)
+              },
+            )
           ],
         ),
       ),

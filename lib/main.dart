@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const CategoriesPage(),
+      home: CategoriesPage(),
       theme: ThemeData(
         androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
         appBarTheme: AppBarTheme(

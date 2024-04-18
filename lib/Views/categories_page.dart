@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:recipe_app/Controllers/wishlist_controller.dart';
 import 'package:recipe_app/Models/Data/data.dart';
 
 import 'package:recipe_app/Models/meals_model.dart';
 import 'package:recipe_app/Views/products_page.dart';
+import 'package:recipe_app/Views/wishlist_page.dart';
 
 class CategoriesPage extends StatelessWidget {
-  const CategoriesPage({super.key});
+  CategoriesPage({super.key});
 
   List<Meal> filteredMeals(String categoryId) {
   return meals.where((meal) => meal.categoryIds.contains(categoryId)).toList();
 }
 
+  final wishListController = Get.put(WishListController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(onPressed: (){
+            Get.to(()=> WishListPage());
+          }, icon: const Icon(Icons.favorite_outline))
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return GridView.builder(
